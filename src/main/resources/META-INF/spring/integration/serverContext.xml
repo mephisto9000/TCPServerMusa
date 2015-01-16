@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:int="http://www.springframework.org/schema/integration"
+	xmlns:int-ip="http://www.springframework.org/schema/integration/ip"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
+		http://www.springframework.org/schema/integration/ip http://www.springframework.org/schema/integration/ip/spring-integration-ip.xsd">
+
+	<context:property-placeholder />
+        
+        
+        <int-ip:tcp-connection-factory id="server"
+        type="server"
+        port="${availableServerSocket}"        
+        single-use="false"
+        so-timeout="100000"/>
+                
+              
+        <int-ip:tcp-inbound-gateway id="gatewayCrLf"
+		connection-factory="server"
+		request-channel="serverBytes2StringChannel"
+		error-channel="errorChannel"/>
+        
+        <int:transformer id="errorHandler"
+		input-channel="errorChannel"
+		expression="payload.failedMessage.payload + ':' + payload.cause.message"/>
+        
+                                
+        <int:channel id="loop"/> 
+            
+                      
+	<int:service-activator input-channel="loop"
+		ref="echoService"
+		method="saySum"/>
+        
+        <int:object-to-string-transformer id="serverBytes2String"
+		input-channel="serverBytes2StringChannel"
+		output-channel="loop"/>
+        
+        
+	<bean id="echoService"
+		class="org.tcpserver.service.CalcService" />
+
+</beans>
