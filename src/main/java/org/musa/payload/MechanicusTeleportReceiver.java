@@ -29,10 +29,11 @@ import org.springframework.core.serializer.Serializer;
 public class MechanicusTeleportReceiver implements Deserializer<String>{
     
     
-
+    
     public String deserialize(InputStream in) throws IOException {        
         
-               
+                if (in.available() < 10)
+                    return "";
       
 		String name = readString(in);
                 
@@ -48,12 +49,23 @@ public class MechanicusTeleportReceiver implements Deserializer<String>{
                 
                 SMRank rank = SMRank.valueOf(readString(in));
                 
+                System.out.println("rank == " + rank.name());
+                
                 SMLoyalty loyalty = SMLoyalty.valueOf(readString(in));
+                System.out.println("loyalty == " + loyalty.name());
+                
                 SMStatus status = SMStatus.valueOf(readString(in));
+                System.out.println("status == "+status.name());
                 //public SpaceMarine(String name, String chapter, int kills, SMRank rank, SMLoyalty loyalty, int damage)
                 int damage = Integer.parseInt(readString(in));
+                
+                
+                System.out.println("damage == " + damage);
+                
                 SpaceMarine spacemarine = new SpaceMarine(name, chapter, kills, rank, loyalty, damage);
 
+                int b = in.available();
+                in.skip(b);
 		
 		return name;
 	
@@ -64,16 +76,19 @@ public class MechanicusTeleportReceiver implements Deserializer<String>{
         StringBuilder sb   = new StringBuilder();
 
         int val;
-        while(true)
+        while(in.available()>0)
         {
+            
+            //in.
             val = in.read();
             
-            if (((char)val)==';')
+            if (((char)val)==';' || val == -1)
                 break;
            
             sb.append((char)val);
         }
 
+        //System.out.println("string == " +sb.toString());
 	return sb.toString();
     }
 

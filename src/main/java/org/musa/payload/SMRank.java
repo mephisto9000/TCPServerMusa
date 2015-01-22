@@ -20,6 +20,14 @@ package org.musa.payload;
  * @author mephisto9000
  */
 public enum SMRank {
-    Brother, CaptainBrother, SwordMaster, Librarian, Apothecary, Drednought, Primarch
+    /*
+    Brother("Brother"), CaptainBrother("CaptainBrother"), SwordMaster("CaptainBrother"), Librarian("Librarian"), Apothecary("Apothecary"), Drednought("Drednought"), Primarch("Drednought");
     
+    private SMRank(String strName) {
+        this.strName = strName;
+    }
+    
+    private String strName;*/
+    
+    Brother, CaptainBrother, SwordMaster, Librarian, Apothecary, Drednought, Primarch
 }
