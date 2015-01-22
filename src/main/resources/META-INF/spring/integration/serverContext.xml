@@ -16,12 +16,13 @@
         type="server"
         port="${availableServerSocket}"        
         single-use="false"
-        so-timeout="100000"/>
+        so-timeout="100000"
+        deserializer="deserializer"/>
                 
               
         <int-ip:tcp-inbound-gateway id="gatewayCrLf"
 		connection-factory="server"
-		request-channel="serverBytes2StringChannel"
+		request-channel="teleportChannel"
 		error-channel="errorChannel"/>
         
         <int:transformer id="errorHandler"
@@ -36,9 +37,13 @@
 		ref="echoService"
 		method="saySum"/>
         
-        <int:object-to-string-transformer id="serverBytes2String"
+        <bean id="deserializer" class="org.musa.payload.MechanicusTeleportReceiver"/>
+        
+        
+        <int:channel id="teleportChannel" />
+        <!--<int:object-to-string-transformer id="serverBytes2String"
 		input-channel="serverBytes2StringChannel"
-		output-channel="loop"/>
+		output-channel="loop"/> -->
         
         
 	<bean id="echoService"

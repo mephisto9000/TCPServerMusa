@@ -18,13 +18,17 @@ package org.musa.tcpserver;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
+import org.musa.payload.SpaceMarine;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import org.springframework.context.support.GenericXmlApplicationContext;
 import org.springframework.core.env.MapPropertySource;
+import org.springframework.integration.handler.AbstractReplyProducingMessageHandler;
 import org.springframework.integration.ip.tcp.connection.AbstractServerConnectionFactory;
 import org.springframework.integration.ip.util.TestingUtilities;
 import org.springframework.integration.test.util.SocketUtils;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.SubscribableChannel;
 
 /**
  * Demonstrates the use of a gateway as an entry point into the integration flow.
@@ -67,6 +71,21 @@ public final class Main {
             context.registerShutdownHook();
             
             final AbstractServerConnectionFactory crLfServer = context.getBean(AbstractServerConnectionFactory.class);
+            
+            SubscribableChannel channel = (SubscribableChannel) context.getBean("teleportChannel");
+		channel.subscribe(new AbstractReplyProducingMessageHandler() {
+
+			@Override
+			protected Object handleRequestMessage(Message<?> requestMessage) {
+				
+                                SpaceMarine spaceMarine = (SpaceMarine) requestMessage.getPayload();
+
+				
+                                System.out.println(spaceMarine.getName());
+                                
+				return requestMessage;
+			}
+		});
             
             TestingUtilities.waitListening(crLfServer, 10000L);
                         

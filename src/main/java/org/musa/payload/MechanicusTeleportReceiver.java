@@ -28,54 +28,30 @@ import org.springframework.core.serializer.Serializer;
  */
 public class MechanicusTeleportReceiver implements Deserializer<SpaceMarine>{
 
-    public void serialize(SpaceMarine spaceMarine, OutputStream out) throws IOException {
-                
-                       
-                /*
-                disassembling the space marine...
-                */
-                
-                byte[] nameParticles = spaceMarine.getName().getBytes();
-		out.write(nameParticles);
-
-		byte[] chapterParticles = spaceMarine.getChapter().getBytes();
-		out.write(chapterParticles);
-
-		byte[] killsParticles = Integer.toString(spaceMarine.getKills()).getBytes();                
-		out.write(killsParticles);
-                
-                byte[] rankParticles = spaceMarine.getRank().name().getBytes();
-                out.write(rankParticles);
-                
-                byte[] loyaltyParticles = spaceMarine.getLoyalty().name().getBytes();
-                out.write(loyaltyParticles);
-                
-                byte[] statusParticles = spaceMarine.getStatus().name().getBytes();
-                out.write(statusParticles);
-                
-                               		
-		out.flush();
-        
-     
-    }
-
-    public SpaceMarine deserialize(InputStream in) throws IOException {
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public SpaceMarine deserialize(InputStream in) throws IOException {        
         
       
 		String name = readString(in);
+                
+                System.out.println("name == "+name);
+                
 		String chapter = readString(in);
+                
+                System.out.println("chapter == "+ chapter);
+                
                 int kills = Integer.parseInt(readString(in));
+                
+                System.out.println("kills == " + kills);
+                
                 SMRank rank = SMRank.valueOf(readString(in));
                 SMLoyalty loyalty = SMLoyalty.valueOf(readString(in));
                 SMStatus status = SMStatus.valueOf(readString(in));
                 //public SpaceMarine(String name, String chapter, int kills, SMRank rank, SMLoyalty loyalty, int damage)
-                SpaceMarine marine = new SpaceMarine(name, chapter, kills, rank, loyalty, damage);
+                int damage = Integer.parseInt(readString(in));
+                SpaceMarine spacemarine = new SpaceMarine(name, chapter, kills, rank, loyalty, damage);
 
-		CustomOrder order = new CustomOrder(orderNumber, senderName);
-		String message = parseMessage(inputStream);
-		order.setMessage(message);
-		return order;
+		
+		return spacemarine;
 	
     }
     
@@ -90,8 +66,8 @@ public class MechanicusTeleportReceiver implements Deserializer<SpaceMarine>{
             
             if (((char)val)==';')
                 break;
-            
-            sb.append(val);
+           
+            sb.append((char)val);
         }
         
 	return sb.toString();
