@@ -72,8 +72,8 @@ public class MechanicusTeleportReceiver implements Deserializer<String>{
                 break;
            
             sb.append((char)val);
-        } 
-        
+        }
+
 	return sb.toString();
     }
 
