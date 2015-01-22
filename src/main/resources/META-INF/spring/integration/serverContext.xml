@@ -17,21 +17,29 @@
         port="${availableServerSocket}"        
         single-use="false"
         so-timeout="100000"
+       
         deserializer="deserializer"/>
                 
               
         <int-ip:tcp-inbound-gateway id="gatewayCrLf"
 		connection-factory="server"
 		request-channel="teleportChannel"
+                reply-channel="loop"
 		error-channel="errorChannel"/>
         
+        
+ 
+        
+        
+        
+        <!--reply-channel="loop"-->
         <int:transformer id="errorHandler"
 		input-channel="errorChannel"
 		expression="payload.failedMessage.payload + ':' + payload.cause.message"/>
         
                                 
         <int:channel id="loop"/> 
-            
+             
                       
 	<int:service-activator input-channel="loop"
 		ref="echoService"
@@ -41,9 +49,10 @@
         
         
         <int:channel id="teleportChannel" />
-        <!--<int:object-to-string-transformer id="serverBytes2String"
-		input-channel="serverBytes2StringChannel"
-		output-channel="loop"/> -->
+        
+        <int:object-to-string-transformer id="serverBytes2String"
+		input-channel="teleportChannel"
+		output-channel="loop"/> 
         
         
 	<bean id="echoService"

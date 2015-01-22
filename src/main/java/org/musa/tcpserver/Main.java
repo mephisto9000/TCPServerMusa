@@ -68,24 +68,25 @@ public final class Main {
             System.out.println("preparing to launch the server app");
             
             final GenericXmlApplicationContext context = setupContext(); 
-            context.registerShutdownHook();
+           // context.registerShutdownHook();
             
             final AbstractServerConnectionFactory crLfServer = context.getBean(AbstractServerConnectionFactory.class);
             
+            /*
             SubscribableChannel channel = (SubscribableChannel) context.getBean("teleportChannel");
 		channel.subscribe(new AbstractReplyProducingMessageHandler() {
 
 			@Override
 			protected Object handleRequestMessage(Message<?> requestMessage) {
 				
-                                SpaceMarine spaceMarine = (SpaceMarine) requestMessage.getPayload();
+                                String inputString = (String) requestMessage.getPayload();
 
 				
-                                System.out.println(spaceMarine.getName());
+                                System.out.println(inputString);
                                 
 				return requestMessage;
 			}
-		});
+		}); */
             
             TestingUtilities.waitListening(crLfServer, 10000L);
                         
