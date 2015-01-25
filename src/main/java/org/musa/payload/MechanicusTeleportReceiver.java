@@ -26,15 +26,13 @@ import org.springframework.core.serializer.Serializer;
  *
  * @author mephisto9000
  */
-public class MechanicusTeleportReceiver implements Deserializer<String>{
+public class MechanicusTeleportReceiver implements Deserializer<SpaceMarine>{
     
     
     
-    public String deserialize(InputStream in) throws IOException {        
+    public SpaceMarine deserialize(InputStream in) throws IOException {        
         
-                if (in.available() < 10)
-                    return "";
-      
+                     
 		String name = readString(in);
                 
                 System.out.println("name == "+name);
@@ -67,7 +65,7 @@ public class MechanicusTeleportReceiver implements Deserializer<String>{
                 int b = in.available();
                 in.skip(b);
 		
-		return name;
+		return spacemarine;
 	
     }
     
@@ -92,39 +90,7 @@ public class MechanicusTeleportReceiver implements Deserializer<String>{
 	return sb.toString();
     }
 
-    /*
-    public void serialize(SpaceMarine spaceMarine, OutputStream out) throws IOException {
-       
-        
-        
-         //       disassembling the space marine...
-                
-                
-                byte[] nameParticles = (spaceMarine.getName()+';').getBytes();
-		out.write(nameParticles);
-
-		byte[] chapterParticles = (spaceMarine.getChapter()+';').getBytes();
-		out.write(chapterParticles);
-
-		byte[] killsParticles = (Integer.toString(spaceMarine.getKills())+';').getBytes();                
-		out.write(killsParticles);
-                
-                byte[] rankParticles = (spaceMarine.getRank().name()+';').getBytes();
-                out.write(rankParticles);
-                
-                byte[] loyaltyParticles = (spaceMarine.getLoyalty().name()+';').getBytes();
-                out.write(loyaltyParticles);
-                
-                byte[] statusParticles = (spaceMarine.getStatus().name()+';').getBytes();
-                out.write(statusParticles);
-                
-                byte[] damageParticles = (Integer.toString(spaceMarine.getDamage())+';').getBytes();
-                out.write(damageParticles);
-                               		
-		out.flush();
-    }
-            
-    */
+    
     
     
 }

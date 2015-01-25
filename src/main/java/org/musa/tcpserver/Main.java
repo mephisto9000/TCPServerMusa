@@ -56,6 +56,9 @@ public final class Main {
 	/**
 	 * Prevent instantiation.
 	 */
+    
+        
+        
 	private Main() {}
 
 	/**
@@ -65,32 +68,18 @@ public final class Main {
 	 */
 	public static void main(final String... args) {
             
-            System.out.println("preparing to launch the server app");
+            System.out.println("preparing to launch the server app 'Eye of Terror'");
             
             final GenericXmlApplicationContext context = setupContext(); 
            // context.registerShutdownHook();
             
             final AbstractServerConnectionFactory crLfServer = context.getBean(AbstractServerConnectionFactory.class);
             
-            /*
-            SubscribableChannel channel = (SubscribableChannel) context.getBean("teleportChannel");
-		channel.subscribe(new AbstractReplyProducingMessageHandler() {
-
-			@Override
-			protected Object handleRequestMessage(Message<?> requestMessage) {
-				
-                                String inputString = (String) requestMessage.getPayload();
-
-				
-                                System.out.println(inputString);
-                                
-				return requestMessage;
-			}
-		}); */
+           
             
             TestingUtilities.waitListening(crLfServer, 10000L);
                         
-            System.out.println("Server app is up and running at port "+crLfServer.getPort());
+            System.out.println("'Eye of Terror' is up and running at port "+crLfServer.getPort());
                         
 	}
  
@@ -103,6 +92,8 @@ public final class Main {
 
 		final Map<String, Object> sockets = new HashMap<String, Object>();
 		sockets.put("availableServerSocket", availableServerSocket);
+                
+                
 
 		final MapPropertySource propertySource = new MapPropertySource("sockets", sockets);
 
@@ -117,4 +108,6 @@ public final class Main {
 
 		return context;
 	} 
+        
+        
 }

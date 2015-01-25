@@ -27,7 +27,7 @@ import java.util.List;
 
 public class SpaceMarine {
     
-    private static int MAX_HEALTH = 100;
+    private static int MAX_HEALTH = 1000;
         
     private String name;
 

@@ -18,7 +18,7 @@
                 single-use="false"
                 deserializer="deserializer"                
                  using-nio="true"
-		port="${availableServerSocket}"/>
+		port="5566"/>
         	                              
         <int-ip:tcp-inbound-gateway id="gatewayCrLf"
 		connection-factory="server"
@@ -29,7 +29,7 @@
         
  
          <bean id="deserializer" class="org.musa.payload.MechanicusTeleportReceiver"/>
-         
+         <!--<bean id="serializer" class="org.musa.payload.MechanicusTeleportSender"/>-->
          
         
         
@@ -40,10 +40,7 @@
         
                                 
         <int:channel id="loop"/> 
-             
-                     
-        
-        
+                                                  
         
         <int:channel id="teleportChannel" />
                         
@@ -51,6 +48,48 @@
         <int:transformer id="warpTransformer" ref="warpTransformerBean" input-channel="serverTeleportChannel"
              method="transform" output-channel="loop"/>
         <bean id="warpTransformerBean" class="org.tcpserver.service.WarpTransformer" />
+        
+        
+        
+        <int-ip:tcp-connection-factory id="client"
+        type="client"
+        host="localhost"
+        port="5566"
+        single-use="false"
+        so-timeout="100000"
+        
+         using-nio="true"
+        />
+        
+        
+                               
+                                 
+        <int:channel id="input" />
+        
+        
+		
+                
+		
+        
+       <int:gateway id="gw"
+		service-interface="org.musa.tcpserver.WarpGateway"
+                
+		default-request-channel="input"/> 
+                               
+       
+        
+        <int-ip:tcp-outbound-gateway id="outGateway"
+		request-channel="input"
+		reply-channel="teleportChannel"
+		connection-factory="client"
+		request-timeout="10000"
+		reply-timeout="10000"/>
+        
+        
+                                
+       <int:object-to-string-transformer id="clientBytes2String"
+		input-channel="teleportChannel" />
+       
         
        
 

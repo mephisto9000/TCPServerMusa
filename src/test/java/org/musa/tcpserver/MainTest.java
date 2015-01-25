@@ -15,19 +15,49 @@
  */
 package org.musa.tcpserver;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.runner.RunWith;
+import org.musa.payload.SMLoyalty;
+import org.musa.payload.SMRank;
+import org.musa.payload.SpaceMarine;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.GenericXmlApplicationContext;
+import org.springframework.core.serializer.Serializer;
+import org.springframework.integration.ip.tcp.connection.AbstractClientConnectionFactory;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.MessageChannel;
+import org.springframework.messaging.support.MessageBuilder;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  *
  * @author mephisto9000
  */
+@RunWith(SpringJUnit4ClassRunner.class)
+
+
+@ContextConfiguration(locations = {"classpath:META-INF/spring/integration/serverContext_test.xml" })
+
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class MainTest {
+    
+    
+    @Autowired 
+    AbstractClientConnectionFactory client;
+    
+    @Autowired 
+    WarpGateway gw;
+    
+    
     
     public MainTest() {
     }
@@ -51,20 +81,78 @@ public class MainTest {
     /**
      * Test of main method, of class Main.
      */
-    /*
-    @Test
-    public void testMain() {
-        System.out.println("main");
-        String[] args = null;
-        Main.main(args);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    } */
+   
     @Test
     public void  testSetup() {
         System.out.println("Main.setupContext test1");
         GenericXmlApplicationContext context = Main.setupContext();
         assertNotNull(context);
     }
+    
+    
+     @Test
+    public void  testSetup1() {
+        System.out.println("Integration test2");
+        
+        //GenericXmlApplicationContext context = Main.setupTestContext();
+        
+        client.setSerializer(new Serializer<SpaceMarine>(){
+            
+             public void serialize(SpaceMarine spaceMarine, OutputStream out) throws IOException {
+                
+                       
+                /*
+                disassembling the space marine...
+                */
+                
+                
+                byte[] nameParticles = (spaceMarine.getName()+';').getBytes();
+		out.write(nameParticles);
+                
+                
+
+		byte[] chapterParticles = (spaceMarine.getChapter()+';').getBytes();
+		out.write(chapterParticles);
+
+		byte[] killsParticles = (Integer.toString(spaceMarine.getKills())+';').getBytes();                
+		out.write(killsParticles);
+                
+                
+                
+                byte[] rankParticles = (spaceMarine.getRank().name()+';').getBytes();
+                out.write(rankParticles);
+                
+                byte[] loyaltyParticles = (spaceMarine.getLoyalty().name()+';').getBytes();
+                out.write(loyaltyParticles);
+                
+                byte[] statusParticles = (spaceMarine.getStatus().name()+';').getBytes();
+                out.write(statusParticles);
+                
+                byte[] damageParticles = (Integer.toString(spaceMarine.getDamage())+';').getBytes();
+                out.write(damageParticles);
+                
+                
+                               		
+		out.flush();
+        
+     
+    }
+        
+        });
+        
+        SpaceMarine horus = new SpaceMarine("Horus", "Sons of Horus", 999999, SMRank.Primarch, SMLoyalty.Traitor, 999);
+        Message<SpaceMarine> m = MessageBuilder.withPayload(horus)        
+        .build();
+        
+        String res = gw.send(m);
+        
+        assertEquals("noone hurt", res);
+        
+        //
+        //assertNotNull(context);
+    }
+    
+    
+    
     
 }
